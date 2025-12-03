@@ -1,0 +1,18 @@
+{
+    "java.project.referencedLibraries": [
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\javafx.swing.jar",
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\javafx.fxml.jar",
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\javafx.media.jar",
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\javafx-swt.jar",
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\javafx.base.jar",
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\jdk.jsobject.jar",
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\javafx.web.jar",
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\javafx.graphics.jar",
+        "c:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\javafx.controls.jar",
+        "C:\\Users\\jting\\CompSci\\javafx-sdk-24.0.1\\lib\\*.jar"
+    ],
+    "java.project.sourcePaths": [
+        "src"
+    ],
+    "java.jdt.ls.java.home": "C:\\Program Files\\Java\\jdk-22"    
+}
