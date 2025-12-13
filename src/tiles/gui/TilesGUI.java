@@ -17,14 +17,13 @@ import tiles.model.TilesModel;
 public class TilesGUI extends Application implements Observer<TilesModel, String> {
     private TilesModel model;
     private Label[][] grid = new Label[4][4];
-    private static String level;
     private Label moves = new Label();
     private Label status = new Label();
     private Label score = new Label();
     @Override
     public void init() {
         // TODO
-        this.model = new TilesModel(level);
+        this.model = new TilesModel();
         this.model.addObserver(this);
         makeGrid();
         this.model.ready();
@@ -164,11 +163,6 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
         }
     }
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.println("Usage: TilesGUI <TEST|EASY|NORMAL>");
-            System.exit(0);
-        }
-        level = args[0];
         Application.launch(args);
     }
 }

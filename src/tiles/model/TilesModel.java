@@ -16,12 +16,6 @@ public class TilesModel {
     public static final int DIM = 4;
 
     /**
-     * The maximum number of digits of a tile's number.
-     * This constant is used in the toString method to create the board's grid.
-     */
-    public static final int TILES_MAX_NUMBER_DIGITS = String.valueOf(Level.NORMAL).length();
-
-    /**
      * Default tile value
      */
     public static final int EMPTY = 0;
@@ -109,10 +103,6 @@ public class TilesModel {
      */
     private int bestScore;
     /**
-     * the number to have in a tile to win the game
-     */
-    private final int goalNumber;
-    /**
      * the best score read from file
      */
     private int originalBestScore;
@@ -134,10 +124,9 @@ public class TilesModel {
      * Create a new game
      * @param levelName the difficulty level of the game
      */
-    public TilesModel(String levelName) {
+    public TilesModel() {
         this.random = new Random();
         // getting the goal number according to the game's level selected
-        this.goalNumber = Level.valueOf(levelName).getGoalNumber();
         this.observers = new ArrayList<>();
         // reading from the file the highest score achieved so far
         try (Scanner in = new Scanner(new FileReader(BEST_SCORE_FILE_NAME))) {
@@ -234,23 +223,6 @@ public class TilesModel {
     }
 
     /**
-     * Is there a cell in the board with the GOAL number?
-     *
-     * @return whether there is a cell with the GOAL number
-     */
-    public boolean hasWon() {
-        // classic way of iterating over a 2D
-        for (int row = 0; row < DIM; row++) {
-            for (int col = 0; col < DIM; col++) {
-                if (board[row][col] == this.goalNumber) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * Is the game over? The user will lose the game
      * if the board is full and none of the tiles can be joined together.
      *
@@ -313,9 +285,7 @@ public class TilesModel {
 
             // check if the game has been won (hasWon()), or lost (hasLost()), and set the status accordingly 
             // (see GameStatus enum at the top). If the game is still not over, the status should be ONGOING
-            if (hasWon()) {
-                status = GameStatus.WON;
-            } else if (hasLost()) {
+            if (hasLost()) {
                 status = GameStatus.LOST;
             } else {
                 status = GameStatus.ONGOING;
@@ -499,7 +469,9 @@ public class TilesModel {
      *
      * @return the string representation of the model.
      */
-    public String toString() {
+    public String toString() {    
+        int TILES_MAX_NUMBER_DIGITS = getMaxNumberDigits();   // <-- dynamic value
+
         StringBuilder result = new StringBuilder(" ");
         result.append(System.lineSeparator());
         // displaying columns numbers
@@ -528,6 +500,19 @@ public class TilesModel {
         }
         return result.toString();
     }
+
+    private int getMaxNumberDigits() {
+    int max = 0;
+    for (int[] row : board) {
+        for (int val : row) {
+            if (val > max) {
+                max = val;
+            }
+        }
+    }
+    // At least 1 digit (for the empty tile placeholder)
+    return Math.max(1, String.valueOf(max).length());
+}
 
     /**
      * When the model changes, the observers are notified via their update method

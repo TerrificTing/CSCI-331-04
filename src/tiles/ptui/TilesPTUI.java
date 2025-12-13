@@ -1,7 +1,6 @@
 package tiles.ptui;
 
 import tiles.model.Direction;
-import tiles.model.Level;
 import tiles.model.Observer;
 import tiles.model.TilesModel;
 
@@ -29,7 +28,7 @@ public class TilesPTUI implements Observer<TilesModel, String> {
      * @param level the game's difficulty level
      */
     public TilesPTUI(String level) {
-        this.model = new TilesModel(level);
+        this.model = new TilesModel();
         initializeView();
     }
 
