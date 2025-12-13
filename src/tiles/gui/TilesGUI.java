@@ -1,6 +1,10 @@
 package tiles.gui;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import tiles.AI.RandomAI;
 import tiles.model.Direction;
 import tiles.model.Observer;
 import tiles.model.TilesModel;
@@ -20,6 +25,8 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
     private Label moves = new Label();
     private Label status = new Label();
     private Label score = new Label();
+    private RandomAI ai = new RandomAI();
+
     @Override
     public void init() {
         // TODO
@@ -95,6 +102,11 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
         bottom.setOnAction((event -> {
             this.model.move(Direction.SOUTH);
         }));
+        
+        Button runAIButton = new Button("Run Random AI");
+        runAIButton.setOnAction(e -> startRandomAI());
+        rightPanel.getChildren().add(runAIButton);
+
         buttons.setBottom(bottom);
         rightPanel.getChildren().add(buttons);
         borderPane.setRight(rightPanel);
@@ -161,6 +173,33 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
                 grid[row][col] = label;
             }
         }
+    }
+
+    private void startRandomAI() {
+    new Thread(() -> {
+        while (!model.isGameOver()) {
+            Direction move = ai.chooseMove(model);
+            // Update model safely on FX thread
+            Platform.runLater(() -> model.move(move));
+            try {
+                Thread.sleep(300); // wait a bit so moves are visible
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+        // Get the text from the Label
+        String text = score.getText(); // e.g., "Score: \n1748"
+
+        // Extract the number
+        String[] parts = text.split("\n"); // ["Score: ", "1748"]
+        String number = parts[1];          // "1748"
+        // After game over, save score
+        try (java.io.FileWriter writer = new java.io.FileWriter("randomai.csv", true)) {
+            writer.append(number + "\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        }).start();
     }
     public static void main(String[] args) {
         Application.launch(args);
