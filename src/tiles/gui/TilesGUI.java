@@ -1,15 +1,15 @@
 package tiles.gui;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import tiles.AI.RandomAI;
 import tiles.model.Direction;
 import tiles.model.Observer;
 import tiles.model.TilesModel;
@@ -17,14 +17,15 @@ import tiles.model.TilesModel;
 public class TilesGUI extends Application implements Observer<TilesModel, String> {
     private TilesModel model;
     private Label[][] grid = new Label[4][4];
-    private static String level;
     private Label moves = new Label();
     private Label status = new Label();
     private Label score = new Label();
+    private RandomAI ai = new RandomAI();
+
     @Override
     public void init() {
         // TODO
-        this.model = new TilesModel(level);
+        this.model = new TilesModel();
         this.model.addObserver(this);
         makeGrid();
         this.model.ready();
@@ -46,8 +47,6 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
         hBox.getChildren().add(status);
         score.setText("Score: \n" + this.model.getScore());
         hBox.getChildren().add(score);
-        Label bestScore = new Label("Best Score: \n" + this.model.getBestScore());
-        hBox.getChildren().add(bestScore);
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(75);
         borderPane.setTop(hBox);
@@ -96,6 +95,11 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
         bottom.setOnAction((event -> {
             this.model.move(Direction.SOUTH);
         }));
+        
+        Button runAIButton = new Button("Run Random AI");
+        runAIButton.setOnAction(e -> startRandomAI());
+        rightPanel.getChildren().add(runAIButton);
+
         buttons.setBottom(bottom);
         rightPanel.getChildren().add(buttons);
         borderPane.setRight(rightPanel);
@@ -163,12 +167,25 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
             }
         }
     }
-    public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.println("Usage: TilesGUI <TEST|EASY|NORMAL>");
-            System.exit(0);
+
+    private void startRandomAI() {
+    new Thread(() -> {
+        while (!model.isGameOver()) {
+            Direction move = ai.chooseMove(model);
+            // Update model safely on FX thread
+            Platform.runLater(() -> model.move(move));
+            try {
+                Thread.sleep(300); // wait a bit so moves are visible
+            } catch (InterruptedException e) {
+                break;
+            }
         }
-        level = args[0];
+
+        ai.addData(model);
+    }).start();
+    }
+    
+    public static void main(String[] args) {
         Application.launch(args);
     }
 }

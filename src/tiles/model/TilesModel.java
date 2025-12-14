@@ -1,6 +1,5 @@
 package tiles.model;
 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -14,12 +13,6 @@ public class TilesModel {
      * the square dimension of the board
      */
     public static final int DIM = 4;
-
-    /**
-     * The maximum number of digits of a tile's number.
-     * This constant is used in the toString method to create the board's grid.
-     */
-    public static final int TILES_MAX_NUMBER_DIGITS = String.valueOf(Level.NORMAL).length();
 
     /**
      * Default tile value
@@ -56,11 +49,6 @@ public class TilesModel {
                     GameStatus.ONGOING, "+%d points",
                     GameStatus.READY, "Good luck!"
             ));
-
-    /**
-     * The source of the best score
-     */
-    private static final String BEST_SCORE_FILE_NAME = "data/score.tiles";
 
     /**
      * The list of possible initial numbers a tile can hold when created
@@ -105,18 +93,6 @@ public class TilesModel {
      */
     private int score;
     /**
-     * the best score achieved in a game
-     */
-    private int bestScore;
-    /**
-     * the number to have in a tile to win the game
-     */
-    private final int goalNumber;
-    /**
-     * the best score read from file
-     */
-    private int originalBestScore;
-    /**
      * the observers of this model
      */
     private final List<Observer<TilesModel, String>> observers;
@@ -134,21 +110,10 @@ public class TilesModel {
      * Create a new game
      * @param levelName the difficulty level of the game
      */
-    public TilesModel(String levelName) {
+    public TilesModel() {
         this.random = new Random();
         // getting the goal number according to the game's level selected
-        this.goalNumber = Level.valueOf(levelName).getGoalNumber();
         this.observers = new ArrayList<>();
-        // reading from the file the highest score achieved so far
-        try (Scanner in = new Scanner(new FileReader(BEST_SCORE_FILE_NAME))) {
-            if (in.hasNext()) {
-                this.originalBestScore = in.nextInt();
-            }
-        } catch (Exception ignored) {
-            this.originalBestScore = 0;
-        }
-        // at first, best score is equal to the value read from file
-        this.bestScore = this.originalBestScore;
         init();
     }
 
@@ -219,9 +184,6 @@ public class TilesModel {
      *
      * @return the best score
      */
-    public int getBestScore() {
-        return this.bestScore;
-    }
 
     /**
      * Notify the observers that the game is ready.
@@ -231,23 +193,6 @@ public class TilesModel {
      */
     public void ready() {
         notifyObservers(STATE_MSGS.get(GameStatus.READY));
-    }
-
-    /**
-     * Is there a cell in the board with the GOAL number?
-     *
-     * @return whether there is a cell with the GOAL number
-     */
-    public boolean hasWon() {
-        // classic way of iterating over a 2D
-        for (int row = 0; row < DIM; row++) {
-            for (int col = 0; col < DIM; col++) {
-                if (board[row][col] == this.goalNumber) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -313,9 +258,7 @@ public class TilesModel {
 
             // check if the game has been won (hasWon()), or lost (hasLost()), and set the status accordingly 
             // (see GameStatus enum at the top). If the game is still not over, the status should be ONGOING
-            if (hasWon()) {
-                status = GameStatus.WON;
-            } else if (hasLost()) {
+            if (hasLost()) {
                 status = GameStatus.LOST;
             } else {
                 status = GameStatus.ONGOING;
@@ -452,29 +395,8 @@ public class TilesModel {
      * Same some model's statistics before shutting down the game.
      */
     public void shutdown() {
-        saveScore();
     }
 
-    /**
-     * Save the best score in a file (see BEST_SCORE_FILE_NAME) only if it has been improved.
-     *
-     * @return whether the best score has been updated and stored into the file correctly.
-     */
-    private boolean saveScore() {
-        // compare bestScore against originalBestScore field to determine
-        // if the best score has been improved.
-        // if so, update the score stored in BEST_SCORE_FILE_NAME file
-        if (this.bestScore > this.originalBestScore) {
-            try (FileWriter out = new FileWriter(BEST_SCORE_FILE_NAME)){
-            out.write(String.valueOf(this.bestScore));
-            } catch (IOException exception) {
-                return false;
-            }
-        }
-        // to override the file's content, create a FileWriter as follows:
-        // new FileWriter(BEST_SCORE_FILE_NAME, false); // disabling the append option
-        return true;
-    }
 
     /**
      * Reset the game
@@ -499,7 +421,9 @@ public class TilesModel {
      *
      * @return the string representation of the model.
      */
-    public String toString() {
+    public String toString() {    
+        int TILES_MAX_NUMBER_DIGITS = getMaxNumberDigits();   // <-- dynamic value
+
         StringBuilder result = new StringBuilder(" ");
         result.append(System.lineSeparator());
         // displaying columns numbers
@@ -529,6 +453,19 @@ public class TilesModel {
         return result.toString();
     }
 
+    private int getMaxNumberDigits() {
+    int max = 0;
+    for (int[] row : board) {
+        for (int val : row) {
+            if (val > max) {
+                max = val;
+            }
+        }
+    }
+    // At least 1 digit (for the empty tile placeholder)
+    return Math.max(1, String.valueOf(max).length());
+}
+
     /**
      * When the model changes, the observers are notified via their update method
      */
@@ -546,9 +483,6 @@ public class TilesModel {
      */
     private void updateScore(int amount) {
         this.score += amount;
-        if (this.score > this.bestScore) {
-            this.bestScore = this.score;
-        }
     }
 
     /**
