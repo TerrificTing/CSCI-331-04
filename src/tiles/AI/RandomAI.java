@@ -1,11 +1,10 @@
 package tiles.AI;
 
-import tiles.model.Direction;
-import tiles.model.TilesModel;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
+import tiles.model.Direction;
+import tiles.model.TilesModel;
 
 /**
  * Simple AI that picks a random valid move.
@@ -19,6 +18,15 @@ public class RandomAI implements AI {
         return dirs[random.nextInt(dirs.length)];
     }
 
+    @Override
+    public void addData(TilesModel model) {
+        try (FileWriter writer = new FileWriter("randomai.csv", true)) { // append mode
+            writer.write(model.getScore() + "," + model.getMovesMade() + "\n");
+        } catch (IOException e) {
+
+        }
+    }
+
         public static void main(String[] args) {
         TilesModel model = new TilesModel(); // create a new game
         RandomAI ai = new RandomAI();         // create AI instance
@@ -30,11 +38,7 @@ public class RandomAI implements AI {
             System.out.println("Score: " + model.getScore() + "\n");
         }
         
-        try (FileWriter writer = new FileWriter("randomai.csv", true)) { // append mode
-            writer.write(model.getScore() + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ai.addData(model);
 
         System.out.println("Game Over! Final Score: " + model.getScore());
     }

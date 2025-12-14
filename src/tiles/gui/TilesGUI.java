@@ -1,17 +1,12 @@
 package tiles.gui;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import tiles.AI.RandomAI;
@@ -52,8 +47,6 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
         hBox.getChildren().add(status);
         score.setText("Score: \n" + this.model.getScore());
         hBox.getChildren().add(score);
-        Label bestScore = new Label("Best Score: \n" + this.model.getBestScore());
-        hBox.getChildren().add(bestScore);
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(75);
         borderPane.setTop(hBox);
@@ -187,20 +180,11 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
                 break;
             }
         }
-        // Get the text from the Label
-        String text = score.getText(); // e.g., "Score: \n1748"
 
-        // Extract the number
-        String[] parts = text.split("\n"); // ["Score: ", "1748"]
-        String number = parts[1];          // "1748"
-        // After game over, save score
-        try (java.io.FileWriter writer = new java.io.FileWriter("randomai.csv", true)) {
-            writer.append(number + "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        }).start();
+        ai.addData(model);
+    }).start();
     }
+    
     public static void main(String[] args) {
         Application.launch(args);
     }

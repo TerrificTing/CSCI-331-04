@@ -3,6 +3,20 @@
     "configurations": [
       {
         "type": "java",
+        "name": "TilesPTUI",
+        "request": "launch",
+        "mainClass": "tiles.ptui.TilesPTUI",
+        "projectName": "CSCI-331-04_7eb687e2"
+      },
+      {
+        "type": "java",
+        "name": "RandomAI",
+        "request": "launch",
+        "mainClass": "tiles.AI.RandomAI",
+        "projectName": "CSCI-331-04_7eb687e2"
+      },
+      {
+        "type": "java",
         "name": "RandomAI",
         "request": "launch",
         "mainClass": "tiles.AI.RandomAI",

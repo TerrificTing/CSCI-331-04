@@ -1,6 +1,5 @@
 package tiles.model;
 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -52,11 +51,6 @@ public class TilesModel {
             ));
 
     /**
-     * The source of the best score
-     */
-    private static final String BEST_SCORE_FILE_NAME = "data/score.tiles";
-
-    /**
      * The list of possible initial numbers a tile can hold when created
      */
     private static final List<Integer> INITIAL_TILE_VALUES = List.of(2, 4);
@@ -99,14 +93,6 @@ public class TilesModel {
      */
     private int score;
     /**
-     * the best score achieved in a game
-     */
-    private int bestScore;
-    /**
-     * the best score read from file
-     */
-    private int originalBestScore;
-    /**
      * the observers of this model
      */
     private final List<Observer<TilesModel, String>> observers;
@@ -128,16 +114,6 @@ public class TilesModel {
         this.random = new Random();
         // getting the goal number according to the game's level selected
         this.observers = new ArrayList<>();
-        // reading from the file the highest score achieved so far
-        try (Scanner in = new Scanner(new FileReader(BEST_SCORE_FILE_NAME))) {
-            if (in.hasNext()) {
-                this.originalBestScore = in.nextInt();
-            }
-        } catch (Exception ignored) {
-            this.originalBestScore = 0;
-        }
-        // at first, best score is equal to the value read from file
-        this.bestScore = this.originalBestScore;
         init();
     }
 
@@ -208,9 +184,6 @@ public class TilesModel {
      *
      * @return the best score
      */
-    public int getBestScore() {
-        return this.bestScore;
-    }
 
     /**
      * Notify the observers that the game is ready.
@@ -422,29 +395,8 @@ public class TilesModel {
      * Same some model's statistics before shutting down the game.
      */
     public void shutdown() {
-        saveScore();
     }
 
-    /**
-     * Save the best score in a file (see BEST_SCORE_FILE_NAME) only if it has been improved.
-     *
-     * @return whether the best score has been updated and stored into the file correctly.
-     */
-    private boolean saveScore() {
-        // compare bestScore against originalBestScore field to determine
-        // if the best score has been improved.
-        // if so, update the score stored in BEST_SCORE_FILE_NAME file
-        if (this.bestScore > this.originalBestScore) {
-            try (FileWriter out = new FileWriter(BEST_SCORE_FILE_NAME)){
-            out.write(String.valueOf(this.bestScore));
-            } catch (IOException exception) {
-                return false;
-            }
-        }
-        // to override the file's content, create a FileWriter as follows:
-        // new FileWriter(BEST_SCORE_FILE_NAME, false); // disabling the append option
-        return true;
-    }
 
     /**
      * Reset the game
@@ -531,9 +483,6 @@ public class TilesModel {
      */
     private void updateScore(int amount) {
         this.score += amount;
-        if (this.score > this.bestScore) {
-            this.bestScore = this.score;
-        }
     }
 
     /**
