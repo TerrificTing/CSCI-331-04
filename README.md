@@ -1,7 +1,9 @@
 2048 Classic Game
+
 We are implementing a 2048 game solver through algorithms.
 
 Abstract:
+
 We created a smaller version of the game 2048. We used the Greedy Algorithm, MiniMax Algorithm, and Random to attempt to get to 2048. We calculated each of the algorithm's best scores to determine which algorithm is the best at solving 2048.
 
 Objectives:
@@ -31,8 +33,9 @@ Contributors:
 - Prepared Presentation
 
 How to Run:
+
 Prerequisties
-- Java 24
+- Java 22.0.2
 
 Step 1: Clone the repository
 git clone https://github.com/YOUR_USERNAME/CSCI-331-04.git
