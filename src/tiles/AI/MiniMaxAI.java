@@ -56,7 +56,37 @@ public class MiniMaxAI implements AI {
         }
 
         // Further evaluation logic can be added here
-        return model.getScore();
+        if(depth % 2 == 1) {
+            // Maximizing player
+            Direction[] dirs = Direction.values();
+            int maxEval = Integer.MIN_VALUE;
+
+            for(Direction dir : dirs) {
+                TilesModel current = model.copy();
+                current.move(dir);
+
+                if(!current.equals(model)) {
+                    int eval = evaluate(current, depth - 1);
+                    maxEval = Math.max(maxEval, eval);
+                }
+            }
+            return maxEval;
+        } else {
+            // Minimizing player
+            Direction[] dirs = Direction.values();
+            int minEval = Integer.MAX_VALUE;
+
+            for(Direction dir : dirs) {
+                TilesModel current = model.copy();
+                current.move(dir);
+
+                if(!current.equals(model)) {
+                    int eval = evaluate(current, depth - 1);
+                    minEval = Math.min(minEval, eval);
+                }
+            }
+            return minEval;
+        }    
     }
 
     @Override
