@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import tiles.AI.GreedyAI;
 import tiles.AI.RandomAI;
 import tiles.model.Direction;
 import tiles.model.Observer;
@@ -20,7 +21,8 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
     private Label moves = new Label();
     private Label status = new Label();
     private Label score = new Label();
-    private RandomAI ai = new RandomAI();
+    private RandomAI randomAI = new RandomAI();
+    private GreedyAI greedyAI= new GreedyAI();
 
     @Override
     public void init() {
@@ -100,6 +102,10 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
         runAIButton.setOnAction(e -> startRandomAI());
         rightPanel.getChildren().add(runAIButton);
 
+        Button runGreedyAIButton = new Button("Run Greedy AI");
+        runGreedyAIButton.setOnAction(e -> startGreedyAI());
+        rightPanel.getChildren().add(runGreedyAIButton);
+
         buttons.setBottom(bottom);
         rightPanel.getChildren().add(buttons);
         borderPane.setRight(rightPanel);
@@ -169,20 +175,37 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
     }
 
     private void startRandomAI() {
-    new Thread(() -> {
-        while (!model.isGameOver()) {
-            Direction move = ai.chooseMove(model);
-            // Update model safely on FX thread
-            Platform.runLater(() -> model.move(move));
-            try {
-                Thread.sleep(300); // wait a bit so moves are visible
-            } catch (InterruptedException e) {
-                break;
+        new Thread(() -> {
+            while (!model.isGameOver()) {
+                Platform.runLater(() -> {
+                    model.move(randomAI.chooseMove(model));
+                });
+                try {
+                    Thread.sleep(300); // wait a bit so moves are visible
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
-        }
 
-        ai.addData(model);
-    }).start();
+            randomAI.addData(model);
+        }).start();
+    }
+
+    private void startGreedyAI() {
+        new Thread(() -> {
+            while(!model.isGameOver()) {
+                Platform.runLater(() -> {
+                    model.move(greedyAI.chooseMove(model));
+                });
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException exception) {
+
+                }
+            }
+
+            greedyAI.addData(model);
+        }).start();
     }
     
     public static void main(String[] args) {

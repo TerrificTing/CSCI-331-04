@@ -517,4 +517,15 @@ public class TilesModel {
     private boolean inBounds(int row, int col) {
         return 0 <= row && row < DIM && 0 <= col && col < DIM;
     }
+
+    public TilesModel copy() {
+        TilesModel newModel = new TilesModel();
+        for(int i = 0; i < 4; i++){ 
+            for(int j = 0; j < 4; j++) {
+                newModel.board[i][j] = board[i][j];
+            }
+        }
+        newModel.score = this.score;
+        return newModel;
+    }
 }
