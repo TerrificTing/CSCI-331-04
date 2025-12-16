@@ -21,10 +21,6 @@ public class GreedyAI implements AI {
             current.move(dir);
 
             if(!current.equals(model)) {
-                System.out.println(current);
-                System.out.println(current.getScore());
-                System.out.println(model);
-                System.out.println(model.getScore());
                 if(current.getScore() > max) {
                     move = dir;
                     max = current.getScore();
