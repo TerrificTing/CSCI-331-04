@@ -21,10 +21,6 @@ public class GreedyAI implements AI {
             current.move(dir);
 
             if(!current.equals(model)) {
-                System.out.println(current);
-                System.out.println(current.getScore());
-                System.out.println(model);
-                System.out.println(model.getScore());
                 if(current.getScore() > max) {
                     move = dir;
                     max = current.getScore();
@@ -36,14 +32,13 @@ public class GreedyAI implements AI {
             Random random = new Random();
             move = dirs[random.nextInt(dirs.length)];
         }
-        System.out.println(move);
         return move;
     }
 
     @Override
     public void addData(TilesModel model) {
         try (FileWriter writer = new FileWriter("greedyai.csv", true)) { // append mode
-            writer.write(model.getScore() + "," + model.getMovesMade() + "\n");
+            writer.write(model.getScore() + "," + model.getMovesMade() + "," + model.maxScore() + "\n");
         } catch (IOException e) {
 
         }

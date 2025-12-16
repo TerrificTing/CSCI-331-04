@@ -106,6 +106,9 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
         runGreedyAIButton.setOnAction(e -> startGreedyAI());
         rightPanel.getChildren().add(runGreedyAIButton);
 
+        Button runMiniMaxAIButton = new Button("Run MiniMax AI");
+        runMiniMaxAIButton.setOnAction(e -> startMiniMaxAI());
+        rightPanel.getChildren().add(runMiniMaxAIButton);
         buttons.setBottom(bottom);
         rightPanel.getChildren().add(buttons);
         borderPane.setRight(rightPanel);
@@ -208,6 +211,26 @@ public class TilesGUI extends Application implements Observer<TilesModel, String
         }).start();
     }
     
+    public void startMiniMaxAI() {
+        new Thread(() -> {
+            // Create an instance of MiniMaxAI
+            tiles.AI.MiniMaxAI miniMaxAI = new tiles.AI.MiniMaxAI();
+            int depth = 3; // Example depth
+
+            while (!model.isGameOver()) {
+                Platform.runLater(() -> {
+                    model.move(miniMaxAI.chooseMove(model));
+                });
+                try {
+                    Thread.sleep(300); // wait a bit so moves are visible
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+
+            miniMaxAI.addData(model);
+        }).start();
+    }
     public static void main(String[] args) {
         Application.launch(args);
     }
