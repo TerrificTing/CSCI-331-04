@@ -62,7 +62,7 @@ public class MiniMaxAI implements AI {
     @Override
     public void addData(TilesModel model) {
         try (FileWriter writer = new FileWriter("minimax.csv", true)) { // append mode
-            writer.write(model.getScore() + "," + model.getMovesMade() + "\n");
+            writer.write(model.getScore() + "," + model.getMovesMade() + "," + model.maxScore() + "\n");
         } catch (IOException e) {
 
         }
@@ -80,7 +80,6 @@ public class MiniMaxAI implements AI {
             }
 
             model.move(move);
-            System.out.println("Move: " + move + " Score: " + model.getScore());
         }
 
         minimaxAI.addData(model);

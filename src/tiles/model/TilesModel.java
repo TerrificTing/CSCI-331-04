@@ -528,4 +528,17 @@ public class TilesModel {
         newModel.score = this.score;
         return newModel;
     }
+
+    public int maxScore() {
+        int maxScore = 0;
+        for (int i = 0; i < DIM; i++) {
+            for (int j = 0; j < DIM; j++) {
+                if (this.board[i][j] > maxScore) {
+                    maxScore = this.board[i][j];
+                }
+            }
+        }
+
+        return maxScore;
+    }
 }

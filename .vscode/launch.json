@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "MiniMaxAI",
+        "request": "launch",
+        "mainClass": "tiles.AI.MiniMaxAI",
+        "projectName": "CSCI-331-04_899410ea"
+      },
+      {
+        "type": "java",
         "name": "GreedyAI",
         "request": "launch",
         "mainClass": "tiles.AI.GreedyAI",

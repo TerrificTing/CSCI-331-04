@@ -21,7 +21,7 @@ public class RandomAI implements AI {
     @Override
     public void addData(TilesModel model) {
         try (FileWriter writer = new FileWriter("randomai.csv", true)) { // append mode
-            writer.write(model.getScore() + "," + model.getMovesMade() + "\n");
+            writer.write(model.getScore() + "," + model.getMovesMade() + "," + model.maxScore() + "\n");
         } catch (IOException e) {
 
         }
@@ -34,8 +34,6 @@ public class RandomAI implements AI {
         while (!model.isGameOver()) {
             Direction move = ai.chooseMove(model);
             model.move(move);
-            System.out.println(model);                   // print the board
-            System.out.println("Score: " + model.getScore() + "\n");
         }
         
         ai.addData(model);
