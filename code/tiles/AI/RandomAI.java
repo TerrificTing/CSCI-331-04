@@ -20,14 +20,14 @@ public class RandomAI implements AI {
 
     @Override
     public void addData(TilesModel model) {
-        try (FileWriter writer = new FileWriter("randomai.csv", true)) { // append mode
+        try (FileWriter writer = new FileWriter("data/randomai.csv", true)) { // append mode
             writer.write(model.getScore() + "," + model.getMovesMade() + "," + model.maxScore() + "\n");
         } catch (IOException e) {
 
         }
     }
 
-        public static void main(String[] args) {
+    public static void play() {
         TilesModel model = new TilesModel(); // create a new game
         RandomAI ai = new RandomAI();         // create AI instance
 
@@ -39,5 +39,8 @@ public class RandomAI implements AI {
         ai.addData(model);
 
         System.out.println("Game Over! Final Score: " + model.getScore());
+    }
+    public static void main(String[] args) {
+        play();
     }
 }
