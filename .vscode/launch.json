@@ -3,6 +3,13 @@
     "configurations": [
       {
         "type": "java",
+        "name": "GreedyAI",
+        "request": "launch",
+        "mainClass": "tiles.AI.GreedyAI",
+        "projectName": "CSCI-331-04_899410ea"
+      },
+      {
+        "type": "java",
         "name": "TilesPTUI",
         "request": "launch",
         "mainClass": "tiles.ptui.TilesPTUI",
