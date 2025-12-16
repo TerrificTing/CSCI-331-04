@@ -21,6 +21,7 @@ Contributors:
 - Implemented MiniMax
 - Implemented GreedyAI
 - Tested each algorithms
+- Created Graphs
 - Prepared Presentation
 
 2. Jason Ting
@@ -34,7 +35,7 @@ Contributors:
 
 How to Run:
 
-Prerequisties
+Prerequisite
 - Java 22.0.2
 
 Step 1: Clone the repository
